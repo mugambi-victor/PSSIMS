@@ -94,7 +94,7 @@ return [
         ],
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://admin:root@cluster0.npyxbgt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
+            'dsn' => env('MONGODB_URI'),
             'database' => 'pssims',
     ],
 
