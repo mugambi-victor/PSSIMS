@@ -94,7 +94,9 @@ return [
         ],
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', ''),
+
+            'dsn' => env('MONGODB_URI'),
+
             'database' => 'pssims',
     ],
 
