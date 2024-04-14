@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\academicYear;
 use Illuminate\Http\Request;
 use App\Models\Term;
+use App\Models\Result;
+use App\Http\Controllers\ResultController;
 class AcademicYearController extends Controller
 {
     /**
@@ -27,36 +29,54 @@ class AcademicYearController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    // Validate the incoming request
-    $this->validate($request, [
-        'name' => 'required|string|unique',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|unique:academic_years,name'
+        ]);
+    
+        // Check if academic year with the same name already exists
+        if (AcademicYear::where('name', $request->name)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An academic year with the same name already exists'
+            ], 422);
+        }    
 
-    // Create a new academic year instance
-    $academicYear = new AcademicYear();
-    $academicYear->name = $request->name;
-
-    // Save the academic year
-    $academicYear->save();
-
-    // Assuming you have a Term model, create three terms and associate them with the academic year
-    for ($i = 1; $i <= 3; $i++) {
-        $term = new Term();
-        $term->name = 'Term ' . $i;
-        // Associate the term with the academic year
-        $term->academic_year_id = $academicYear->id;
-        $term->save();
+        // Create a new academic year
+        $academicYear = new AcademicYear();
+        $academicYear->name = $request->name;
+        $academicYear->save();
+    
+        // Create terms for the academic year
+        $termNames = ['Term One', 'Term Two', 'Term Three']; // Provide unique names for terms
+        foreach ($termNames as $termName) {
+            $term = new Term();
+            $term->name = $termName;
+            $term->academic_year_id = $academicYear->id;
+            $term->save();
+    
+            // Create exam results for each term
+            $examResults = [
+                'Opener Exam Result',
+                'Midterm Exam Result',
+                'Endterm Exam Result'
+            ];
+            foreach ($examResults as $resultName) {
+                $examResult = new Result();
+                $examResult->term_id = $term->id;
+                $examResult->result_name = $resultName;
+                $examResult->save();
+            }
+        }
+    
+        // Return response with created academic year and terms
+        return response()->json([
+            'success' => true,
+            'message' => 'Academic year, terms, and exam results created successfully',
+            'academic_year' => $academicYear,
+        ]);
     }
-
-    // Optionally, you can redirect the user to a different page after successful creation
-    return response()->json([
-        'success' => true,
-        'message' => 'Academic year and terms created successfully',
-        'academic_year' => $academicYear,
-        'terms' => $term,
-    ]);
-}
+    
 
 
     /**
