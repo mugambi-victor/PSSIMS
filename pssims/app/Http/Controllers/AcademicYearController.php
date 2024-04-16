@@ -14,7 +14,9 @@ class AcademicYearController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'academicYears' => academicYear::all()
+        ]);
     }
 
     /**

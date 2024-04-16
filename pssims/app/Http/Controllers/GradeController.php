@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Term;
+use App\Models\Grade;
 use Illuminate\Http\Request;
 
-class TermController extends Controller
+class GradeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +13,7 @@ class TermController extends Controller
     public function index()
     {
         return response()->json([
-            'terms' => Term::all()
+            'grades' => Grade::all()
         ]);
     }
 
@@ -31,12 +31,29 @@ class TermController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' =>'required|unique:grades,name'
+        ]);
+
+        // Check if grade with the same name already exists
+        if (Grade::where('name', $request->name)->exists()) {
+            return response()->json([
+               'message' => 'Grade already exists'
+            ], 422);
+        }
+
+        // Create new grade
+        $grade = Grade::create($request->all());
+
+        return response()->json([
+            'grade' => $grade
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Term $term)
+    public function show(Grade $grade)
     {
         //
     }
@@ -44,7 +61,7 @@ class TermController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Term $term)
+    public function edit(Grade $grade)
     {
         //
     }
@@ -52,7 +69,7 @@ class TermController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Term $term)
+    public function update(Request $request, Grade $grade)
     {
         //
     }
@@ -60,7 +77,7 @@ class TermController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Term $term)
+    public function destroy(Grade $grade)
     {
         //
     }

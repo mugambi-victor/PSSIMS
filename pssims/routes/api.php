@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\TermController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\StudentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::resource('academicyears', AcademicYearController::class);
+Route::resource('terms', TermController::class);
+Route::resource('grades',GradeController::class);
+Route::resource('students',StudentController::class);
